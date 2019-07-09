@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">PanCardReader</string>
+
+    <string name="app_details">PAN Card Reader:A permanent account number (PAN) is a ten-digit alphanumeric number, issued in the form of a laminated card, by the Indian Income Tax Department, to any "person" who applies for it or to whom the department allots the number without an application.</string>
+
+    <string name="result_screen_heading">PAN CARD HOLDER DETAILS</string>
+
+    <string name="name">Name</string>
+
+    <string name="demo_name">ABC XYZ</string>
+
+    <string name="father_name">Father\'s Name</string>
+
+    <string name="dob">Date of Birth (DOB)</string>
+
+    <string name="date_demo">DD/MM/YYYY</string>
+
+    <string name="pan_card_no">Permanent Account Number (PAN)</string>
+
+    <string name="number_txt">##########</string>
+
+    <string name="compare">Compare</string>
+
+    <string name="face_comparison">Face Comparison</string>
+
+    <string name="image">Image</string>
+
+    <string name="camera">Camera</string>
+
+    <string name="gallery">Gallery</string>
+</resources>

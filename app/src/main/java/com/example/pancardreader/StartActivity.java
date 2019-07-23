@@ -1,7 +1,11 @@
 package com.example.pancardreader;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,15 +41,80 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void onScanPress() {
-
-        Intent scanIntent = new Intent(this, CardIOActivity.class);
-        scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_SCAN, true); // supmit cuando termine de reconocer el documento
-        scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true); // esconder teclado
-        scanIntent.putExtra(CardIOActivity.EXTRA_USE_CARDIO_LOGO, true); // cambiar logo de paypal por el de card.io
-        scanIntent.putExtra(CardIOActivity.EXTRA_RETURN_CARD_IMAGE, true); // capture img
-        scanIntent.putExtra(CardIOActivity.EXTRA_CAPTURED_CARD_IMAGE, true); // capturar img
-        startActivityForResult(scanIntent, MY_SCAN_REQUEST_CODE);
+        if(isWriteStoragePermissionGranted() && isReadStoragePermissionGranted()) {
+            Intent scanIntent = new Intent(this, CardIOActivity.class);
+            scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_SCAN, true); // supmit cuando termine de reconocer el documento
+            scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true); // esconder teclado
+            scanIntent.putExtra(CardIOActivity.EXTRA_USE_CARDIO_LOGO, true); // cambiar logo de paypal por el de card.io
+            scanIntent.putExtra(CardIOActivity.EXTRA_RETURN_CARD_IMAGE, true); // capture img
+            scanIntent.putExtra(CardIOActivity.EXTRA_CAPTURED_CARD_IMAGE, true); // capturar img
+            startActivityForResult(scanIntent, MY_SCAN_REQUEST_CODE);
+        }
     }
+
+
+    public  boolean isReadStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("startActivity","Permission is granted1");
+                return true;
+            } else {
+
+                Log.v("startActivity","Permission is revoked1");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("startActivity","Permission is granted1");
+            return true;
+        }
+    }
+
+    public  boolean isWriteStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("startActivity","Permission is granted2");
+                return true;
+            } else {
+
+                Log.v("startActivity","Permission is revoked2");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("startActivity","Permission is granted2");
+            return true;
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 2:
+                Log.d("startActivity", "External storage2");
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    Log.v("startActivity","Permission: "+permissions[0]+ "was "+grantResults[0]);
+                    onScanPress();
+                }
+                break;
+
+            case 3:
+                Log.d("startActivity", "External storage1");
+                if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    Log.v("startActivity","Permission: "+permissions[0]+ "was "+grantResults[0]);
+                    //resume tasks needing this permission
+                    onScanPress();
+                }
+                break;
+        }
+    }
+
 
 
     @Override
